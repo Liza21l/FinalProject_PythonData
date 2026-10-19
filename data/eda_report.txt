@@ -1,0 +1,82 @@
+
+=== 1. РОЗМІР ДАТАСЕТУ ===
+Рядків: 1000
+Стовпців: 9
+
+=== 2. Назва колонок ===
+event_time
+event_type
+product_id
+category_id
+category_code
+brand
+price
+user_id
+user_session
+
+=== 3. Типи даних ===
+event_time        object
+event_type        object
+product_id         int64
+category_id        int64
+category_code     object
+brand             object
+price            float64
+user_id            int64
+user_session      object
+
+=== 4. Перші 5 рядків датасету ===
+             event_time event_type  product_id         category_id                       category_code    brand   price   user_id                         user_session
+2019-10-01 00:00:00 UTC       view    44600062 2103807459595387724                                 NaN shiseido   35.79 541312140 72d76fde-8bb3-4e00-8c23-a032dfed738c
+2019-10-01 00:00:00 UTC       view     3900821 2053013552326770905 appliances.environment.water_heater     aqua   33.20 554748717 9333dfbd-b87a-4708-9857-6336556b0fcc
+2019-10-01 00:00:01 UTC       view    17200506 2053013559792632471          furniture.living_room.sofa      NaN  543.10 519107250 566511c2-e2e3-422b-b695-cf8e6e792ca8
+2019-10-01 00:00:01 UTC       view     1307067 2053013558920217191                  computers.notebook   lenovo  251.74 550050854 7c90fc70-0e80-4590-96f3-13c02c18c713
+2019-10-01 00:00:04 UTC       view     1004237 2053013555631882655              electronics.smartphone    apple 1081.98 535871217 c6bd7419-2748-4c56-95b4-8cec9ff8b80d
+
+=== 5. Пропущені значення ===
+event_time         0
+event_type         0
+product_id         0
+category_id        0
+category_code    366
+brand            143
+price              0
+user_id            0
+user_session       0
+
+=== 6. Відсоток пропусків ===
+event_time        0.0
+event_type        0.0
+product_id        0.0
+category_id       0.0
+category_code    36.6
+brand            14.3
+price             0.0
+user_id           0.0
+user_session      0.0
+
+=== 7. Дублікати ===
+Кількість дублікатів: 0
+
+=== 8. Типи подій ===
+event_type
+view        987
+purchase     10
+cart          3
+
+=== 9. Статистика цін ===
+count    1000.000000
+mean      293.615990
+std       306.058749
+min         2.170000
+25%        72.842500
+50%       197.550000
+75%       386.080000
+max      1763.210000
+
+=== 10. ДІАПАЗОН ДАТ У ВИБІРЦІ ===
+Перша дата: 2019-10-01 00:00:00+00:00
+Остання дата: 2019-10-01 00:17:26+00:00
+
+===  11. Використання пам'яті ===
+Використання пам'яті: 0.30 MB

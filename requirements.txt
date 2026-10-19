@@ -1,0 +1,9 @@
+
+Flask
+Flask-SQLAlchemy
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+plotly

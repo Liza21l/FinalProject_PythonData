@@ -1,0 +1,17 @@
+
+.venv/
+__pycache__/
+*.pyc
+
+*.db
+*.sqlite3
+
+data/*.csv
+
+.ipynb_checkpoints/
+
+ml_pipeline/saved_models/*.pkl
+ml_pipeline/saved_models/*.joblib
+
+.vscode/
+.idea/
