@@ -1,0 +1,32 @@
+
+RANDOM FOREST — РЕЗУЛЬТАТИ
+
+Кількість користувачів: 3022290
+Медіана total_events: 4.0
+
+Найкращі параметри:
+{'max_depth': 10, 'min_samples_split': 5, 'n_estimators': 100}
+
+Найкращий F1 під час GridSearchCV:
+0.9999
+
+Метрики на тестовій вибірці:
+Accuracy:  1.0000
+Precision: 1.0000
+Recall:    1.0000
+F1-score:  1.0000
+
+Матриця помилок:
+[[303929      2]
+ [     0 300527]]
+
+Classification report:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00    303931
+           1       1.00      1.00      1.00    300527
+
+    accuracy                           1.00    604458
+   macro avg       1.00      1.00      1.00    604458
+weighted avg       1.00      1.00      1.00    604458
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data-Driven Platform</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="container">
+        <h1>Data-Driven Platform</h1>
+
+        <p>
+            Вітаю! Це перша версія серверної частини твого проєкту.
+        </p>
+
+        <div id="server-status" class="status">
+            Перевіряємо сервер...
+        </div>
+
+        <button id="check-server">
+            Перевірити сервер
+        </button>
+    </main>
+
+    <script>
+        async function checkServer() {
+            const status = document.getElementById("server-status");
+
+            status.textContent = "Перевіряємо сервер...";
+
+            try {
+                const response = await fetch("/api/health");
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error("Помилка сервера");
+                }
+
+                status.textContent = data.message;
+                status.classList.add("success");
+
+            } catch (error) {
+                status.textContent = "Не вдалося підключитися до сервера.";
+                status.classList.remove("success");
+            }
+        }
+
+        document
+            .getElementById("check-server")
+            .addEventListener("click", checkServer);
+
+        checkServer();
+    </script>
+</body>
+</html>
