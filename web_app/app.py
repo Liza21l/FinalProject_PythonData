@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from datetime import datetime
 
 from flask import Flask, jsonify, render_template, request, send_file
 
@@ -54,10 +55,30 @@ with app.app_context():
 
 
 # Функція для запису операції в базу даних
+
 def log_operation(operation_type, details):
+    details_text = (
+        details
+        if isinstance(details, str)
+        else json.dumps(details, ensure_ascii=False)
+    )
+
+    if operation_type.startswith("queue:"):
+        structure = "queue"
+    elif operation_type.startswith("stack:"):
+        structure = "stack"
+    else:
+        structure = "algorithms"
+
     operation = Operation(
+        user_id=None,
+        structure=structure,
         operation_type=operation_type,
-        details=details
+        value=details_text,
+        description=f"Виконано операцію: {operation_type}",
+        timestamp=datetime.utcnow(),
+        details=details_text,
+        created_at=datetime.utcnow()
     )
 
     db.session.add(operation)
@@ -452,19 +473,21 @@ def dashboard_stats():
 
 @app.route("/api/pca-visualization")
 def pca_visualization():
-    image_path = (
+    html_path = (
         Path(__file__).resolve().parents[1]
         / "data"
-        / "pca_clusters.png"
+        / "pca_clusters.html"
     )
 
-    if not image_path.exists():
+    if not html_path.exists():
         return jsonify({
             "error": "PCA-візуалізацію ще не створено."
         }), 404
 
-    return send_file(image_path, mimetype="image/png")
-
+    return send_file(
+        html_path,
+        mimetype="text/html"
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

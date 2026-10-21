@@ -28,13 +28,8 @@ RANDOM_STATE = 42
 # total_events не включаємо, бо саме на його основі
 # визначатимемо high_engagement.
 FEATURE_COLUMNS = [
-    "views",
-    "carts",
-    "purchases",
-    "remove_from_cart",
     "session_count",
     "avg_session_duration_seconds",
-    "cluster",
 ]
 
 

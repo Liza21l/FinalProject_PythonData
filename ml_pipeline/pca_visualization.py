@@ -1,7 +1,8 @@
+
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.express as px
 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
@@ -11,7 +12,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 FEATURES_PATH = PROJECT_ROOT / "data" / "user_features.csv"
 CLUSTERS_PATH = PROJECT_ROOT / "data" / "user_clusters.csv"
-OUTPUT_PATH = PROJECT_ROOT / "data" / "pca_clusters.png"
+OUTPUT_PATH = PROJECT_ROOT / "data" / "pca_clusters.html"
 
 RANDOM_STATE = 42
 SAMPLE_SIZE = 5_000
@@ -41,6 +42,7 @@ def main():
         )
 
     features_df = pd.read_csv(FEATURES_PATH)
+
     clusters_df = pd.read_csv(
         CLUSTERS_PATH,
         usecols=["user_id", "cluster"]
@@ -53,7 +55,7 @@ def main():
 
     if missing_columns:
         raise ValueError(
-            f"У user_features.csv немає колонок: "
+            "У user_features.csv немає колонок: "
             f"{missing_columns}"
         )
 
@@ -103,7 +105,7 @@ def main():
     valid_rows = X.notna().all(axis=1)
 
     X = X.loc[valid_rows]
-    sample_df = sample_df.loc[valid_rows]
+    sample_df = sample_df.loc[valid_rows].copy()
 
     if len(X) < 2:
         raise ValueError(
@@ -119,7 +121,6 @@ def main():
     print("Виконуємо PCA...")
 
     pca = PCA(n_components=2)
-
     coordinates = pca.fit_transform(X_scaled)
 
     plot_df = pd.DataFrame(
@@ -128,7 +129,13 @@ def main():
         index=sample_df.index
     )
 
-    plot_df["cluster"] = sample_df["cluster"].values
+    plot_df["cluster"] = (
+        sample_df["cluster"].astype(str).values
+    )
+
+    plot_df["user_id"] = (
+        sample_df["user_id"].astype(str).values
+    )
 
     explained_variance = (
         pca.explained_variance_ratio_.sum() * 100
@@ -139,35 +146,69 @@ def main():
         f"{explained_variance:.2f}%"
     )
 
-    print("Створюємо графік...")
+    print("Створюємо інтерактивний графік Plotly...")
 
-    plt.figure(figsize=(11, 7))
+    fig = px.scatter(
+        plot_df,
+        x="PC1",
+        y="PC2",
+        color="cluster",
+        hover_data={
+            "user_id": True,
+            "PC1": ":.3f",
+            "PC2": ":.3f",
+            "cluster": True,
+        },
+        labels={
+            "PC1": "Principal Component 1",
+            "PC2": "Principal Component 2",
+            "cluster": "User Cluster",
+            "user_id": "User ID",
+        },
+        title=(
+            "Customer Segmentation: "
+            "Interactive PCA Visualization"
+        ),
+        opacity=0.65,
+    )
 
-    for cluster_id in sorted(plot_df["cluster"].unique()):
-        cluster_data = plot_df[
-            plot_df["cluster"] == cluster_id
-        ]
+    fig.update_traces(
+        marker=dict(size=6)
+    )
 
-        plt.scatter(
-            cluster_data["PC1"],
-            cluster_data["PC2"],
-            label=f"Cluster {cluster_id}",
-            alpha=0.55,
-            s=15
-        )
+    fig.update_layout(
+        template="plotly_white",
+        height=520,
+        margin=dict(l=35, r=25, t=70, b=45),
+        legend_title_text="User Clusters",
+        xaxis_title="Principal Component 1",
+        yaxis_title="Principal Component 2",
+    )
 
-    plt.title("Customer Segmentation: PCA Visualization")
-    plt.xlabel("Principal Component 1")
-    plt.ylabel("Principal Component 2")
+    fig.add_annotation(
+        text=(
+            f"Explained variance: "
+            f"{explained_variance:.2f}%"
+        ),
+        xref="paper",
+        yref="paper",
+        x=1,
+        y=1.12,
+        showarrow=False,
+        xanchor="right",
+    )
 
-    plt.legend(title="User clusters")
-    plt.grid(alpha=0.2)
-    plt.tight_layout()
+    fig.write_html(
+    OUTPUT_PATH,
+    include_plotlyjs="cdn",
+    full_html=True,
+    config={
+        "responsive": True,
+        "displaylogo": False,
+    },
+)
 
-    plt.savefig(OUTPUT_PATH, dpi=160)
-    plt.close()
-
-    print("\nPCA-візуалізацію створено!")
+    print("\nІнтерактивну PCA-візуалізацію створено!")
     print(f"Графік збережено: {OUTPUT_PATH}")
 
 
