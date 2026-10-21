@@ -452,19 +452,21 @@ def dashboard_stats():
 
 @app.route("/api/pca-visualization")
 def pca_visualization():
-    image_path = (
+    html_path = (
         Path(__file__).resolve().parents[1]
         / "data"
-        / "pca_clusters.png"
+        / "pca_clusters.html"
     )
 
-    if not image_path.exists():
+    if not html_path.exists():
         return jsonify({
             "error": "PCA-візуалізацію ще не створено."
         }), 404
 
-    return send_file(image_path, mimetype="image/png")
-
+    return send_file(
+        html_path,
+        mimetype="text/html"
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
