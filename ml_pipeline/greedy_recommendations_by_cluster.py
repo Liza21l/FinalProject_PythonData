@@ -16,7 +16,7 @@ TEMP_DB = DATA_DIR / "cluster_product_stats.sqlite3"
 OUTPUT_FILE = DATA_DIR / "cluster_product_scores.csv"
 
 CHUNK_SIZE = 100_000
-TOP_N = 10
+TOP_N = 50
 MIN_VIEWS = 10
 
 def build_cluster_recommendations():
