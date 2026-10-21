@@ -117,7 +117,7 @@ Random Forest показав кращі результати за всіма н�
 Заміни `<https://github.com/Liza21l/FinalProject_PythonData>` на адресу свого репозиторію:
 
 ```bash
-git clone <https://github.com/Liza21l/FinalProject_PythonData>
+git clone https://github.com/Liza21l/FinalProject_PythonData.git
 cd FinalProject_PythonData
 ```
 
