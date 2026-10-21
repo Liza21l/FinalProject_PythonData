@@ -220,44 +220,40 @@ def search_number():
         "index": index,
         "found": index != -1
     })
+
 @app.route("/api/recommendations", methods=["GET"])
-def recommendations_api():
+def recommendations_route():
     try:
-        limit = request.args.get("limit", default=10, type=int)
-        max_per_category = request.args.get(
-            "max_per_category",
-            default=2,
-            type=int
-        )
+        cluster_param = request.args.get("cluster")
+        cluster = None
 
-        if not 1 <= limit <= 100:
-            return jsonify({
-                "error": "limit має бути від 1 до 100."
-            }), 400
+        if cluster_param is not None:
+            try:
+                cluster = int(cluster_param)
+            except ValueError:
+                return jsonify({
+                    "error": "Параметр cluster має бути цілим числом."
+                }), 400
 
-        if not 1 <= max_per_category <= 100:
-            return jsonify({
-                "error": "max_per_category має бути від 1 до 100."
-            }), 400
+            if cluster < 0:
+                return jsonify({
+                    "error": "Номер кластера не може бути від'ємним."
+                }), 400
 
         recommendations = get_recommendations(
-            limit=limit,
-            max_per_category=max_per_category
+            limit=10,
+            max_per_category=2,
+            cluster=cluster
         )
 
         return jsonify({
             "count": len(recommendations),
+            "cluster": cluster,
             "recommendations": recommendations
-        })
+        }), 200
 
-    except FileNotFoundError as error:
+    except (FileNotFoundError, OSError, ValueError) as error:
         return jsonify({"error": str(error)}), 500
-
-    except (OSError, ValueError) as error:
-        app.logger.exception("Помилка отримання рекомендацій")
-        return jsonify({
-            "error": "Не вдалося завантажити каталог рекомендацій."
-        }), 500
 
 # Отримання поточного стану черги
 @app.route("/api/queue", methods=["GET"])

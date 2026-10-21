@@ -151,24 +151,41 @@
                         </p>
                     </div>
 
-                    <button
-                        class="button"
-                        id="refresh-recommendations"
-                        type="button"
-                    >
-                        ↻ Refresh
-                    </button>
+                    
+                    <div class="recommendation-controls">
+                        <label for="cluster-filter">User cluster:</label>
+
+                        <select id="cluster-filter" class="algorithm-input">
+                            <option value="all">All clusters</option>
+                            <option value="0">Cluster 0</option>
+                            <option value="1">Cluster 1</option>
+                            <option value="2">Cluster 2</option>
+                            <option value="3">Cluster 3</option>
+                            <option value="4">Cluster 4</option>
+                        </select>
+
+                        <button
+                            class="button"
+                            id="refresh-recommendations"
+                            type="button"
+                        >
+                            ↻ Refresh
+                        </button>
+                    </div>
+
                 </div>
 
                 <div class="table-container">
-                    <table>
+                    <table>                             
                         <thead>
                             <tr>
                                 <th>Product ID</th>
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Average Price</th>
-                                <th>Score</th>
+                                <th>Views</th>
+                                <th>Purchases</th>
+                                <th>Conversion</th>
                             </tr>
                         </thead>
 

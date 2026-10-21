@@ -17,7 +17,7 @@ OUTPUT_FILE = DATA_DIR / "cluster_product_scores.csv"
 
 CHUNK_SIZE = 100_000
 TOP_N = 10
-
+MIN_VIEWS = 10
 
 def build_cluster_recommendations():
     """Рахуємо топ товарів окремо для кожного кластера."""
@@ -206,6 +206,16 @@ def build_cluster_recommendations():
         on="product_id",
         how="left"
     )
+    # Відкидаємо товари з недостатньою кількістю переглядів.
+    stats = stats[stats["views"] >= MIN_VIEWS].copy()
+
+    if stats.empty:
+        raise ValueError(
+            f"Немає товарів із кількістю переглядів >= {MIN_VIEWS}."
+        )
+
+    print("\nКількість товарів-кандидатів після фільтрації:")
+    print(stats.groupby("cluster").size())
 
     # 7. Сортуємо товари всередині кожного кластера
     # Спочатку конверсія, потім кількість переглядів

@@ -344,12 +344,11 @@ function createActivityChart(stats) {
 // 6. Завантаження рекомендацій
 // ============================================
 
+
 async function loadRecommendations() {
     const tableBody = document.getElementById("recommendations-body");
-
-    const refreshButton = document.getElementById(
-        "refresh-recommendations"
-    );
+    const refreshButton = document.getElementById("refresh-recommendations");
+    const clusterFilter = document.getElementById("cluster-filter");
 
     if (!tableBody) {
         return;
@@ -361,25 +360,27 @@ async function loadRecommendations() {
 
     tableBody.innerHTML = `
         <tr>
-            <td colspan="5" class="loading-cell">
+            <td colspan="7" class="loading-cell">
                 Завантаження рекомендацій...
             </td>
         </tr>
     `;
 
     try {
-        const data = await fetchJSON(
-            "/api/recommendations?limit=10"
-        );
+        const selectedCluster = clusterFilter?.value || "all";
+
+        const url = selectedCluster === "all"
+            ? "/api/recommendations"
+            : `/api/recommendations?cluster=${encodeURIComponent(selectedCluster)}`;
+
+        const data = await fetchJSON(url);
 
         const products = Array.isArray(data)
             ? data
             : data.recommendations;
 
         if (!Array.isArray(products)) {
-            throw new Error(
-                "API не повернув список рекомендацій."
-            );
+            throw new Error("API не повернув список рекомендацій.");
         }
 
         tableBody.innerHTML = "";
@@ -387,44 +388,51 @@ async function loadRecommendations() {
         if (products.length === 0) {
             showError(
                 tableBody,
-                "Рекомендацій поки немає.",
-                5
+                "Для вибраного кластера рекомендацій немає.",
+                7
             );
-        } else {
-            products.forEach(product => {
-                const row = document.createElement("tr");
-
-                const price = Number(product.average_price);
-
-                const formattedPrice = Number.isFinite(price)
-                    ? price.toLocaleString("uk-UA", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })
-                    : "—";
-
-                row.innerHTML = `
-                    <td>${escapeHTML(product.product_id)}</td>
-                    <td>${escapeHTML(product.category_code || "Unknown")}</td>
-                    <td>${escapeHTML(product.brand || "Unknown")}</td>
-                    <td>${formattedPrice}</td>
-                    <td>${formatNumber(product.score)}</td>
-                `;
-
-                tableBody.appendChild(row);
-            });
+            return;
         }
 
+        products.forEach(product => {
+            const row = document.createElement("tr");
+
+            const price = Number(product.average_price);
+            const score = Number(product.score);
+
+            const formattedPrice = Number.isFinite(price)
+                ? price.toLocaleString("uk-UA", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
+                : "—";
+
+            const formattedConversion = Number.isFinite(score)
+                ? `${(score * 100).toLocaleString("uk-UA", {
+                    maximumFractionDigits: 1
+                })}%`
+                : "—";
+
+            row.innerHTML = `
+                <td>${escapeHTML(product.product_id)}</td>
+                <td>${escapeHTML(product.category_code || "Unknown")}</td>
+                <td>${escapeHTML(product.brand || "Unknown")}</td>
+                <td>${formattedPrice}</td>
+                <td>${formatNumber(product.views)}</td>
+                <td>${formatNumber(product.purchases)}</td>
+                <td>${formattedConversion}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
     } catch (error) {
-        console.error(
-            "Помилка завантаження рекомендацій:",
-            error
-        );
+        console.error("Помилка завантаження рекомендацій:", error);
 
         showError(
             tableBody,
             `Не вдалося завантажити рекомендації: ${error.message}`,
-            5
+            7
         );
     } finally {
         if (refreshButton) {
@@ -589,82 +597,54 @@ function parseNumbers(input) {
 // 9. Sorting: запит до Flask API
 // ============================================
 
+
 async function sortNumbers() {
-    const input = document.getElementById("sort-input");
+    const input = document.getElementById("sort-input").value;
+    const algorithm = document.getElementById("sort-algorithm").value;
+    const result = document.getElementById("sort-result");
 
-    const algorithmSelect = document.getElementById(
-        "sort-algorithm"
-    );
+    const numbers = input
+        .split(",")
+        .map(value => value.trim())
+        .filter(value => value !== "")
+        .map(Number);
 
-    const resultElement = document.getElementById("sort-result");
-    const button = document.getElementById("sort-button");
-
-    if (!input || !algorithmSelect || !resultElement) {
+    if (
+        numbers.length === 0 ||
+        numbers.some(number => !Number.isFinite(number))
+    ) {
+        result.textContent = "Введи коректні числа через кому.";
         return;
     }
 
     try {
-        const numbers = parseNumbers(input.value);
-        const algorithm = algorithmSelect.value;
-
-        if (button) {
-            button.disabled = true;
-        }
-
-        resultElement.textContent = "Сортування...";
-
-        const data = await fetchJSON("/api/sort".replace(
-            "/api/sort",
-            "/api/sort"
-        ).toString()).catch(async error => {
-            // Для POST потрібен окремий запит.
-            throw error;
+        const response = await fetch("/api/sort", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                numbers: numbers,
+                algorithm: algorithm
+            })
         });
 
-        // Запит POST виконується нижче.
-        // Цей блок не використовується для обробки результату.
-        void data;
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Не вдалося виконати сортування.");
+        }
+
+        result.textContent =
+            "Початковий масив: " + data.original.join(", ") +
+            "\nВідсортований масив: " + data.sorted.join(", ");
 
     } catch (error) {
-        // Помилки основного запиту обробляються нижче.
-        if (
-            error.message !== "Failed to fetch" &&
-            !error.message.startsWith("Помилка сервера:")
-        ) {
-            resultElement.textContent = `Помилка: ${error.message}`;
-            if (button) {
-                button.disabled = false;
-            }
-            return;
-        }
-    }
-
-    try {
-        const numbers = parseNumbers(input.value);
-        const algorithm = algorithmSelect.value;
-
-        const data = await postJSON("/api/sort", {
-            numbers,
-            algorithm
-        });
-
-        resultElement.textContent =
-            `Алгоритм: ${
-                algorithm === "bubble" ? "Bubble Sort" : "Quick Sort"
-            }\n` +
-            `Початковий список: ${data.original.join(", ")}\n` +
-            `Результат: ${data.sorted.join(", ")}`;
-
-        await loadOperations();
-
-    } catch (error) {
-        resultElement.textContent = `Помилка: ${error.message}`;
-    } finally {
-        if (button) {
-            button.disabled = false;
-        }
+        console.error("Помилка сортування:", error);
+        result.textContent = "Помилка: " + error.message;
     }
 }
+
 
 
 // ============================================
@@ -953,6 +933,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
         .getElementById("refresh-recommendations")
         ?.addEventListener("click", loadRecommendations);
+
+    document
+        .getElementById("cluster-filter")
+        ?.addEventListener("change", loadRecommendations);
 
     document
         .getElementById("refresh-operations")
