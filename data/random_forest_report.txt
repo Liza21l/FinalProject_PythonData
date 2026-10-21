@@ -5,28 +5,28 @@ RANDOM FOREST — РЕЗУЛЬТАТИ
 Медіана total_events: 4.0
 
 Найкращі параметри:
-{'max_depth': 10, 'min_samples_split': 5, 'n_estimators': 100}
+{'max_depth': 10, 'min_samples_split': 5, 'n_estimators': 200}
 
 Найкращий F1 під час GridSearchCV:
-0.9999
+0.9199
 
 Метрики на тестовій вибірці:
-Accuracy:  1.0000
-Precision: 1.0000
-Recall:    1.0000
-F1-score:  1.0000
+Accuracy:  0.9208
+Precision: 0.9103
+Recall:    0.9326
+F1-score:  0.9213
 
 Матриця помилок:
-[[303929      2]
- [     0 300527]]
+[[276308  27623]
+ [ 20257 280270]]
 
 Classification report:
               precision    recall  f1-score   support
 
-           0       1.00      1.00      1.00    303931
-           1       1.00      1.00      1.00    300527
+           0       0.93      0.91      0.92    303931
+           1       0.91      0.93      0.92    300527
 
-    accuracy                           1.00    604458
-   macro avg       1.00      1.00      1.00    604458
-weighted avg       1.00      1.00      1.00    604458
+    accuracy                           0.92    604458
+   macro avg       0.92      0.92      0.92    604458
+weighted avg       0.92      0.92      0.92    604458
 

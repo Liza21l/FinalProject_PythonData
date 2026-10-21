@@ -16,3 +16,4 @@ ml_pipeline/saved_models/*.joblib
 
 .vscode/
 .idea/
+.pytest_cache/
