@@ -4,59 +4,401 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Data-Driven Platform</title>
+    <title>Data-Driven Platform | Dashboard</title>
 
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
     >
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-    <main class="container">
-        <h1>Data-Driven Platform</h1>
+    <div class="dashboard">
 
-        <p>
-            Вітаю! Це перша версія серверної частини твого проєкту.
-        </p>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">D</div>
+                <div>
+                    <h2>DataPlatform</h2>
+                    <p>Analytics Dashboard</p>
+                </div>
+            </div>
 
-        <div id="server-status" class="status">
-            Перевіряємо сервер...
-        </div>
+            
+            <nav class="navigation">
+                <a href="#overview" class="nav-link active">
+                    <span>▦</span>
+                    Overview
+                </a>
 
-        <button id="check-server">
-            Перевірити сервер
-        </button>
-    </main>
+                <a href="#recommendations" class="nav-link">
+                    <span>✦</span>
+                    Recommendations
+                </a>
 
-    <script>
-        async function checkServer() {
-            const status = document.getElementById("server-status");
+                <a href="#operations" class="nav-link">
+                    <span>◷</span>
+                    Operation Log
+                </a>
 
-            status.textContent = "Перевіряємо сервер...";
+                <a href="#algorithms" class="nav-link">
+                    <span>↕</span>
+                    Algorithms Lab
+                </a>
 
-            try {
-                const response = await fetch("/api/health");
-                const data = await response.json();
+                <a href="#structures" class="nav-link">
+                    <span>⇄</span>
+                    Queue &amp; Stack
+                </a>
+            </nav>
 
-                if (!response.ok) {
-                    throw new Error("Помилка сервера");
-                }
 
-                status.textContent = data.message;
-                status.classList.add("success");
+            <div class="sidebar-footer">
+                <div class="status-indicator"></div>
+                <span>Data Science Project</span>
+            </div>
+        </aside>
 
-            } catch (error) {
-                status.textContent = "Не вдалося підключитися до сервера.";
-                status.classList.remove("success");
-            }
-        }
+        <!-- Main content -->
+        <main class="main-content">
 
-        document
-            .getElementById("check-server")
-            .addEventListener("click", checkServer);
+            <!-- Header -->
+            <header class="topbar">
+                <div>
+                    <p class="breadcrumb">Workspace / Dashboard</p>
+                    <h1>Dashboard Overview</h1>
+                    <p class="subtitle">
+                        Data analysis, machine learning and product insights.
+                    </p>
+                </div>
 
-        checkServer();
-    </script>
+                <div class="server-status" id="server-status">
+                    <span class="status-dot"></span>
+                    Checking server...
+                </div>
+            </header>
+
+            <!-- Overview -->
+            <section id="overview" class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Overview</h2>
+                        <p>Your project's current status.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <h3>Products Analyzed</h3>
+                        <p id="products-count">Loading...</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Users Analyzed</h3>
+                        <p id="users-count">Loading...</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Total Views</h3>
+                        <p id="views-count">Loading...</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Total Purchases</h3>
+                        <p id="purchases-count">Loading...</p>
+                    </div>
+
+                </div>
+                <div class="charts-grid">
+
+                        <div class="chart-card">
+                            <h3>User Clusters</h3>
+                            <canvas id="clusters-chart"></canvas>
+                        </div>
+
+                        <div class="chart-card">
+                            <h3>User Activity</h3>
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-card pca-card">
+                            <h3>PCA Cluster Visualization</h3>
+
+                            <p class="chart-description">
+                                Візуалізація поведінки користувачів у п'яти кластерах.
+                            </p>
+
+                            <img
+                                src="{{ url_for('pca_visualization') }}"
+                                alt="PCA-візуалізація кластерів користувачів"
+                                class="pca-chart"
+                            >
+                        </div>
+
+                    </div>
+            </section>
+
+            <!-- Recommendations -->
+            <section id="recommendations" class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Product Recommendations</h2>
+                        <p>
+                            Products ranked by engagement and category diversity.
+                        </p>
+                    </div>
+
+                    <button
+                        class="button"
+                        id="refresh-recommendations"
+                        type="button"
+                    >
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Average Price</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recommendations-body">
+                            <tr>
+                                <td colspan="5" class="loading-cell">
+                                    Loading recommendations...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Operation Log -->
+            <section id="operations" class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Operation Log</h2>
+                        <p>
+                            Recent operations recorded in the database.
+                        </p>
+                    </div>
+
+                    <button
+                        class="button button-secondary"
+                        id="refresh-operations"
+                        type="button"
+                    >
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div class="operations-card" id="operations-list">
+                    <p class="loading-cell">Loading operation history...</p>
+                </div>
+            </section>
+            
+            <!-- Algorithms Lab -->
+            <section id="algorithms" class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Algorithms Lab</h2>
+                        <p>Experiment with sorting and searching algorithms.</p>
+                    </div>
+                </div>
+
+                <div class="algorithm-grid">
+
+                    <!-- Sorting -->
+                    <article class="algorithm-card">
+                        <div class="algorithm-card-header">
+                            <div class="stat-icon purple">↕</div>
+                            <div>
+                                <h3>Sorting Algorithms</h3>
+                                <p>Arrange numbers in ascending order.</p>
+                            </div>
+                        </div>
+
+                        <label for="sort-input">Numbers</label>
+                        <input
+                            id="sort-input"
+                            class="algorithm-input"
+                            type="text"
+                            value="64, 34, 25, 12, 22, 11, 90"
+                            placeholder="64, 34, 25, 12"
+                        >
+
+                        <label for="sort-algorithm">Algorithm</label>
+                        <select id="sort-algorithm" class="algorithm-input">
+                            <option value="bubble">Bubble Sort</option>
+                            <option value="quick">Quick Sort</option>
+                        </select>
+
+                        <button id="sort-button" class="button" type="button">
+                            Sort Numbers
+                        </button>
+
+                        <div class="algorithm-result">
+                            <p>Result</p>
+                            <div id="sort-result" class="result-output">
+                                Your sorted numbers will appear here.
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Searching -->
+                    <article class="algorithm-card">
+                        <div class="algorithm-card-header">
+                            <div class="stat-icon blue">⌕</div>
+                            <div>
+                                <h3>Search Algorithms</h3>
+                                <p>Find a number in a list.</p>
+                            </div>
+                        </div>
+
+                        <label for="search-input">Numbers</label>
+                        <input
+                            id="search-input"
+                            class="algorithm-input"
+                            type="text"
+                            value="11, 12, 22, 25, 34, 64, 90"
+                            placeholder="11, 12, 22, 25"
+                        >
+
+                        <label for="search-target">Number to find</label>
+                        <input
+                            id="search-target"
+                            class="algorithm-input"
+                            type="number"
+                            value="22"
+                            placeholder="Enter a number"
+                        >
+
+                        <label for="search-algorithm">Algorithm</label>
+                        <select id="search-algorithm" class="algorithm-input">
+                            <option value="linear">Linear Search</option>
+                            <option value="binary">Binary Search</option>
+                        </select>
+
+                        <p class="input-hint">
+                            Binary Search requires numbers sorted in ascending order.
+                        </p>
+
+                        <button id="search-button" class="button" type="button">
+                            Search Number
+                        </button>
+
+                        <div class="algorithm-result">
+                            <p>Result</p>
+                            <div id="search-result" class="result-output">
+                                Your search result will appear here.
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+            
+            <!-- Queue and Stack section -->
+            <section class="structures-section" id="structures">
+                <div class="section-heading">
+                    <h2>Queue &amp; Stack Lab</h2>
+                    <p>Explore FIFO and LIFO data structures.</p>
+                </div>
+
+                <div class="structures-grid">
+                    <!-- Queue -->
+                    <div class="structure-card">
+                        <h3>Queue <span>FIFO</span></h3>
+                        <p class="structure-description">
+                            First In, First Out
+                        </p>
+
+                        <form id="queue-form" class="structure-form">
+                            <input
+                                type="text"
+                                id="queue-input"
+                                placeholder="Enter an item..."
+                                maxlength="200"
+                                required
+                            >
+                            <button type="submit">Enqueue</button>
+                        </form>
+
+                        <button
+                            type="button"
+                            id="queue-dequeue"
+                            class="secondary-button"
+                        >
+                            Dequeue
+                        </button>
+
+                        <p class="structure-count">
+                            Size: <strong id="queue-size">0</strong>
+                        </p>
+
+                        <p id="queue-message" class="structure-message"
+                        role="status"></p>
+
+                        <ol id="queue-items" class="structure-items"></ol>
+                    </div>
+
+                    <!-- Stack -->
+                    <div class="structure-card">
+                        <h3>Stack <span>LIFO</span></h3>
+                        <p class="structure-description">
+                            Last In, First Out
+                        </p>
+
+                        <form id="stack-form" class="structure-form">
+                            <input
+                                type="text"
+                                id="stack-input"
+                                placeholder="Enter a transaction..."
+                                maxlength="200"
+                                required
+                            >
+                            <button type="submit">Push</button>
+                        </form>
+
+                        <button
+                            type="button"
+                            id="stack-pop"
+                            class="secondary-button"
+                        >
+                            Pop
+                        </button>
+
+                        <p class="structure-count">
+                            Size: <strong id="stack-size">0</strong>
+                        </p>
+
+                        <p id="stack-message" class="structure-message"
+                        role="status"></p>
+
+                        <ol id="stack-items" class="structure-items"></ol>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <footer class="footer">
+                <p>Data-Driven Platform · Python · Flask · Machine Learning</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
