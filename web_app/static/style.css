@@ -810,3 +810,167 @@ td:first-child {
     background: #ffffff;
     border-radius: 8px;
 }
+
+
+/* =========================
+   Product Recommendations
+========================= */
+
+.recommendation-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: end;
+    padding: 24px;
+    margin: 20px 0 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.filter-field > label {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.recommendation-controls .algorithm-input {
+    width: 100%;
+    min-height: 43px;
+    padding: 11px 12px;
+    background: #fff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-controls .algorithm-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
+}
+
+.recommendation-controls .algorithm-input::placeholder {
+    color: #aaaabd;
+}
+
+.typical-check-option {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--primary-light);
+    border: 1px solid #e2deff;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.typical-check-option input {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.typical-check-option span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.typical-check-option strong {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.typical-check-option small {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+#refresh-recommendations {
+    width: 100%;
+    min-height: 43px;
+    grid-column: 1 / -1;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.12);
+}
+
+#recommendation-filter-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 12px 14px;
+    background: #f8f7ff;
+    border: 1px solid #efedff;
+    border-radius: 9px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* Таблиця рекомендацій */
+
+#recommendations .table-container {
+    overflow-x: auto;
+}
+
+#recommendations table {
+    min-width: 700px;
+}
+
+#recommendations thead {
+    background: #f8f7ff;
+}
+
+#recommendations th {
+    padding: 16px;
+}
+
+#recommendations td {
+    padding: 15px 16px;
+}
+
+#recommendations tbody tr:hover {
+    background: #faf9ff;
+}
+
+#recommendations tbody tr {
+    transition: background 0.2s ease;
+}
+
+#recommendations td:first-child {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Адаптація для мобільних пристроїв */
+
+@media (max-width: 768px) {
+    .recommendation-controls {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 18px;
+    }
+
+    .typical-check-option,
+    #refresh-recommendations,
+    #recommendation-filter-status {
+        grid-column: 1;
+    }
+}

@@ -142,8 +142,10 @@
                     </div>
             </section>
 
+            
             <!-- Recommendations -->
             <section id="recommendations" class="section">
+
                 <div class="section-heading">
                     <div>
                         <h2>Product Recommendations</h2>
@@ -151,11 +153,12 @@
                             Products ranked by engagement and category diversity.
                         </p>
                     </div>
+                </div>
 
-                    
-                    <div class="recommendation-controls">
-                        <label for="cluster-filter">User cluster:</label>
+                <div class="recommendation-controls">
 
+                    <div class="filter-field">
+                        <label for="cluster-filter">User cluster</label>
                         <select id="cluster-filter" class="algorithm-input">
                             <option value="all">All clusters</option>
                             <option value="0">Cluster 0</option>
@@ -164,20 +167,58 @@
                             <option value="3">Cluster 3</option>
                             <option value="4">Cluster 4</option>
                         </select>
-
-                        <button
-                            class="button"
-                            id="refresh-recommendations"
-                            type="button"
-                        >
-                            ↻ Refresh
-                        </button>
                     </div>
+
+                    <div class="filter-field">
+                        <label for="recommendation-user-id">User ID</label>
+                        <input
+                            id="recommendation-user-id"
+                            class="algorithm-input"
+                            type="number"
+                            min="1"
+                            placeholder="Напр. 264649825"
+                        >
+                    </div>
+
+                    <div class="filter-field price-filter-field">
+                        <label for="recommendation-max-price">
+                            Максимальна ціна
+                        </label>
+                        <input
+                            id="recommendation-max-price"
+                            class="algorithm-input"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="Автоматично або вручну"
+                        >
+                    </div>
+
+                    <label for="typical-check-filter" class="typical-check-option">
+                        <input
+                            id="typical-check-filter"
+                            type="checkbox"
+                        >
+                        <span>
+                            <strong>Враховувати типовий чек</strong>
+                            <small>Персоналізувати за витратами користувача</small>
+                        </span>
+                    </label>
+
+                    <button
+                        class="button"
+                        id="refresh-recommendations"
+                        type="button"
+                    >
+                        ↻ Оновити рекомендації
+                    </button>
+
+                    <p id="recommendation-filter-status" role="status"></p>
 
                 </div>
 
                 <div class="table-container">
-                    <table>                             
+                    <table>
                         <thead>
                             <tr>
                                 <th>Product ID</th>
@@ -192,14 +233,16 @@
 
                         <tbody id="recommendations-body">
                             <tr>
-                                <td colspan="5" class="loading-cell">
+                                <td colspan="7" class="loading-cell">
                                     Loading recommendations...
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
             </section>
+
 
             <!-- Operation Log -->
             <section id="operations" class="section">

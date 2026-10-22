@@ -345,18 +345,19 @@ function createActivityChart(stats) {
 // ============================================
 
 
+
 async function loadRecommendations() {
     const tableBody = document.getElementById("recommendations-body");
     const refreshButton = document.getElementById("refresh-recommendations");
     const clusterFilter = document.getElementById("cluster-filter");
+    const userIdInput = document.getElementById("recommendation-user-id");
+    const typicalCheckFilter = document.getElementById("typical-check-filter");
+    const maxPriceInput = document.getElementById("recommendation-max-price");
+    const statusElement = document.getElementById("recommendation-filter-status");
 
-    if (!tableBody) {
-        return;
-    }
+    if (!tableBody) return;
 
-    if (refreshButton) {
-        refreshButton.disabled = true;
-    }
+    if (refreshButton) refreshButton.disabled = true;
 
     tableBody.innerHTML = `
         <tr>
@@ -366,15 +367,38 @@ async function loadRecommendations() {
         </tr>
     `;
 
-    try {
-        const selectedCluster = clusterFilter?.value || "all";
+    if (statusElement) statusElement.textContent = "";
 
-        const url = selectedCluster === "all"
-            ? "/api/recommendations"
-            : `/api/recommendations?cluster=${encodeURIComponent(selectedCluster)}`;
+    try {
+        const params = new URLSearchParams();
+
+        const cluster = clusterFilter?.value || "all";
+        const userId = userIdInput?.value.trim() || "";
+        const useTypicalCheck = typicalCheckFilter?.checked || false;
+        const maxPriceText = maxPriceInput?.value.trim() || "";
+
+        if (cluster !== "all") {
+            params.set("cluster", cluster);
+        }
+
+        if (userId) {
+            params.set("user_id", userId);
+        }
+
+        if (useTypicalCheck) {
+            params.set("use_typical_check", "true");
+        }
+
+        if (maxPriceText !== "") {
+            params.set("max_price", maxPriceText);
+        }
+
+        const query = params.toString();
+        const url = query
+            ? `/api/recommendations?${query}`
+            : "/api/recommendations";
 
         const data = await fetchJSON(url);
-
         const products = Array.isArray(data)
             ? data
             : data.recommendations;
@@ -388,43 +412,60 @@ async function loadRecommendations() {
         if (products.length === 0) {
             showError(
                 tableBody,
-                "Для вибраного кластера рекомендацій немає.",
+                "За вибраними умовами товарів не знайдено.",
                 7
             );
-            return;
+        } else {
+            products.forEach(product => {
+                const row = document.createElement("tr");
+
+                const price = Number(product.average_price);
+                const score = Number(product.score);
+
+                const formattedPrice = Number.isFinite(price)
+                    ? price.toLocaleString("uk-UA", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })
+                    : "—";
+
+                const formattedConversion = Number.isFinite(score)
+                    ? `${(score * 100).toLocaleString("uk-UA", {
+                        maximumFractionDigits: 1
+                    })}%`
+                    : "—";
+
+                row.innerHTML = `
+                    <td>${escapeHTML(product.product_id)}</td>
+                    <td>${escapeHTML(product.category_code || "Unknown")}</td>
+                    <td>${escapeHTML(product.brand || "Unknown")}</td>
+                    <td>${formattedPrice}</td>
+                    <td>${formatNumber(product.views)}</td>
+                    <td>${formatNumber(product.purchases)}</td>
+                    <td>${formattedConversion}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
         }
 
-        products.forEach(product => {
-            const row = document.createElement("tr");
+        if (statusElement) {
+            const parts = [];
 
-            const price = Number(product.average_price);
-            const score = Number(product.score);
+            if (useTypicalCheck) {
+                parts.push("Увімкнено типовий чек користувача");
+            }
 
-            const formattedPrice = Number.isFinite(price)
-                ? price.toLocaleString("uk-UA", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                })
-                : "—";
+            if (maxPriceText !== "") {
+                parts.push(`Максимальна ціна: ${maxPriceText}`);
+            } else if (useTypicalCheck) {
+                parts.push("Цінове обмеження взято з типового чека");
+            }
 
-            const formattedConversion = Number.isFinite(score)
-                ? `${(score * 100).toLocaleString("uk-UA", {
-                    maximumFractionDigits: 1
-                })}%`
-                : "—";
-
-            row.innerHTML = `
-                <td>${escapeHTML(product.product_id)}</td>
-                <td>${escapeHTML(product.category_code || "Unknown")}</td>
-                <td>${escapeHTML(product.brand || "Unknown")}</td>
-                <td>${formattedPrice}</td>
-                <td>${formatNumber(product.views)}</td>
-                <td>${formatNumber(product.purchases)}</td>
-                <td>${formattedConversion}</td>
-            `;
-
-            tableBody.appendChild(row);
-        });
+            statusElement.textContent = parts.length
+                ? parts.join(". ") + "."
+                : "Ціновий фільтр вимкнено.";
+        }
 
     } catch (error) {
         console.error("Помилка завантаження рекомендацій:", error);
@@ -434,10 +475,12 @@ async function loadRecommendations() {
             `Не вдалося завантажити рекомендації: ${error.message}`,
             7
         );
-    } finally {
-        if (refreshButton) {
-            refreshButton.disabled = false;
+
+        if (statusElement) {
+            statusElement.textContent = error.message;
         }
+    } finally {
+        if (refreshButton) refreshButton.disabled = false;
     }
 }
 
@@ -937,6 +980,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
         .getElementById("cluster-filter")
         ?.addEventListener("change", loadRecommendations);
+    
+    document
+        .getElementById("typical-check-filter")
+        ?.addEventListener("change", loadRecommendations);
+
+    document
+        .getElementById("recommendation-max-price")
+        ?.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                loadRecommendations();
+            }
+        });
 
     document
         .getElementById("refresh-operations")
