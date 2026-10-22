@@ -242,13 +242,15 @@ def search_number():
         "found": index != -1
     })
 
+
 @app.route("/api/recommendations", methods=["GET"])
 def recommendations_route():
     try:
+        # 1. Отримуємо кластер
         cluster_param = request.args.get("cluster")
         cluster = None
 
-        if cluster_param is not None:
+        if cluster_param not in (None, "", "all"):
             try:
                 cluster = int(cluster_param)
             except ValueError:
@@ -261,17 +263,75 @@ def recommendations_route():
                     "error": "Номер кластера не може бути від'ємним."
                 }), 400
 
+        # 2. Отримуємо ID користувача
+        user_id_param = request.args.get("user_id")
+        user_id = None
+
+        if user_id_param:
+            try:
+                user_id = int(user_id_param)
+            except ValueError:
+                return jsonify({
+                    "error": "user_id має бути цілим числом."
+                }), 400
+
+        # 3. Чи використовувати типовий чек?
+        use_typical_check = (
+            request.args.get("use_typical_check", "false").lower()
+            in ("true", "1", "yes")
+        )
+
+        if use_typical_check and user_id is None:
+            return jsonify({
+                "error": "Для типового чека введи user_id."
+            }), 400
+
+        # 4. Необов'язкова максимальна ціна
+        max_price_param = request.args.get("max_price")
+        max_price = None
+
+        if max_price_param not in (None, ""):
+            try:
+                max_price = float(max_price_param)
+            except ValueError:
+                return jsonify({
+                    "error": "Максимальна ціна має бути числом."
+                }), 400
+
+            if max_price < 0:
+                return jsonify({
+                    "error": "Максимальна ціна не може бути від'ємною."
+                }), 400
+
+        # 5. Отримуємо рекомендації з потрібними фільтрами
         recommendations = get_recommendations(
             limit=10,
             max_per_category=2,
-            cluster=cluster
+            cluster=cluster,
+            user_id=user_id,
+            max_price=max_price,
+            use_typical_check=use_typical_check,
         )
 
         return jsonify({
             "count": len(recommendations),
             "cluster": cluster,
-            "recommendations": recommendations
+            "user_id": user_id,
+            "use_typical_check": use_typical_check,
+            "max_price": max_price,
+            "recommendations": recommendations,
         }), 200
+
+    except FileNotFoundError as error:
+        return jsonify({"error": str(error)}), 500
+
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+
+    except OSError as error:
+        app.logger.exception("Помилка завантаження рекомендацій")
+        return jsonify({"error": str(error)}), 500
+
 
     except (FileNotFoundError, OSError, ValueError) as error:
         return jsonify({"error": str(error)}), 500

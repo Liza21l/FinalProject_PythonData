@@ -1,4 +1,4 @@
-cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,average_price
+﻿cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,average_price
 0,19001760,16,6,0.375,Unknown,Unknown,187.34000000000003
 0,26008900,14,4,0.2857142857142857,Unknown,Unknown,3.662631578947369
 0,12714569,11,3,0.2727272727272727,Unknown,roadstone,108.63
