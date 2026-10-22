@@ -9,6 +9,7 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 0,21404810,15,3,0.2,electronics.clocks,orient,92.40999999999995
 0,26203806,10,2,0.2,Unknown,Unknown,97.5575
 0,9700263,10,2,0.2,computers.components.power_supply,thermaltake,153.13939393939398
+<<<<<<< Updated upstream
 0,12719926,10,2,0.2,Unknown,toyo,167.31
 0,12711878,10,2,0.2,Unknown,Unknown,41.45684210526316
 0,11000255,10,2,0.2,appliances.kitchen.toster,unit,14.65
@@ -49,6 +50,8 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 0,17301478,13,2,0.15384615384615385,Unknown,Unknown,29.90875000000001
 0,28712154,13,2,0.15384615384615385,apparel.shoes,rieker,88.28999999999998
 0,12720532,13,2,0.15384615384615385,Unknown,yokohama,120.90100000000002
+=======
+>>>>>>> Stashed changes
 1,38300454,12,5,0.4166666666666667,Unknown,Unknown,11.238235294117644
 1,12701284,15,6,0.4,Unknown,triangle,93.93142201834868
 1,12711572,26,10,0.38461538461538464,Unknown,triangle,67.02307210031339
@@ -59,6 +62,7 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 1,12707406,18,5,0.2777777777777778,Unknown,Unknown,311.9800000000004
 1,28718799,11,3,0.2727272727272727,apparel.shoes,rieker,114.45
 1,26008123,11,3,0.2727272727272727,Unknown,Unknown,9.340000000000002
+<<<<<<< Updated upstream
 1,26008763,11,3,0.2727272727272727,Unknown,Unknown,3.920000000000001
 1,39000007,11,3,0.2727272727272727,Unknown,luxvisage,2.9600000000000004
 1,26601745,11,3,0.2727272727272727,Unknown,sokolov,29.786818181818184
@@ -99,6 +103,8 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 1,27600150,11,2,0.18181818181818182,country_yard.lawn_mower,viking,437.6796551724136
 1,46200051,11,2,0.18181818181818182,apparel.skirt,sly,30.80294117647057
 1,27201863,11,2,0.18181818181818182,Unknown,machete,36.855
+=======
+>>>>>>> Stashed changes
 2,6301501,14,10,0.7142857142857143,appliances.kitchen.kettle,gorenje,61.75
 2,12712620,12,8,0.6666666666666666,Unknown,bridgestone,427.2233333333336
 2,12708208,26,17,0.6538461538461539,Unknown,cordiant,317.90000000000043
@@ -109,6 +115,7 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 2,12708598,19,12,0.631578947368421,Unknown,michelin,64.34999999999991
 2,12701234,16,10,0.625,Unknown,sava,47.75
 2,19700124,15,9,0.6,Unknown,Unknown,6.381102362204718
+<<<<<<< Updated upstream
 2,12709321,17,10,0.5882352941176471,Unknown,triangle,54.638836633663296
 2,3701432,43,25,0.5813953488372093,appliances.environment.vacuum,vitek,68.86734905925302
 2,12705223,19,11,0.5789473684210527,Unknown,viatti,60.49000000000002
@@ -149,6 +156,8 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 2,17301727,10,5,0.5,Unknown,Unknown,63.86731707317081
 2,28300780,45,22,0.4888888888888889,accessories.wallet,karya,33.45999999999987
 2,21100212,37,18,0.4864864864864865,Unknown,bestway,48.48005102040819
+=======
+>>>>>>> Stashed changes
 3,2300244,20,5,0.25,electronics.camera.video,sjcam,197.4910730593611
 3,1004708,13,1,0.07692307692307693,electronics.smartphone,huawei,153.5965838521287
 3,1004776,18,1,0.05555555555555555,electronics.smartphone,xiaomi,183.75714028187468
@@ -159,6 +168,7 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 3,1005014,48,1,0.020833333333333332,electronics.smartphone,samsung,554.7826287924253
 3,1004833,51,1,0.0196078431372549,electronics.smartphone,samsung,172.0265869169943
 3,1004739,80,1,0.0125,electronics.smartphone,xiaomi,192.23038381357068
+<<<<<<< Updated upstream
 3,1004767,150,1,0.006666666666666667,electronics.smartphone,samsung,248.98423894230768
 3,1003852,352,0,0.0,electronics.smartphone,samsung,229.0700000000008
 3,4802036,317,0,0.0,electronics.audio.headphone,apple,175.13876689976684
@@ -199,6 +209,8 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 3,3600661,34,0,0.0,appliances.kitchen.washer,samsung,295.8457798831612
 3,5100798,32,0,0.0,electronics.clocks,garmin,2160.4615484158885
 3,1003532,32,0,0.0,electronics.smartphone,samsung,360.1099999999994
+=======
+>>>>>>> Stashed changes
 4,50300425,10,6,0.6,Unknown,pnb,5.15
 4,50300209,16,7,0.4375,Unknown,serebro,3.8600000000000025
 4,12707380,21,9,0.42857142857142855,Unknown,Unknown,246.0688000000001
@@ -209,6 +221,7 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 4,12702994,21,7,0.3333333333333333,Unknown,bridgestone,202.84000000000003
 4,7300374,15,5,0.3333333333333333,Unknown,adata,47.4372
 4,50300461,12,4,0.3333333333333333,Unknown,pnb,5.150000000000001
+<<<<<<< Updated upstream
 4,12716322,43,14,0.32558139534883723,Unknown,michelin,166.3252631578949
 4,12700825,45,14,0.3111111111111111,Unknown,nokian,204.1166666666667
 4,12702260,13,4,0.3076923076923077,Unknown,nokian,287.44241379310347
@@ -249,3 +262,5 @@ cluster,product_id,views,purchases,purchase_to_view_ratio,category_code,brand,av
 4,12718899,70,14,0.2,Unknown,Unknown,267.69999999999976
 4,16200324,25,5,0.2,kids.fmcg.diapers,huggies,17.25
 4,12713029,20,4,0.2,Unknown,hankook,141.56999999999996
+=======
+>>>>>>> Stashed changes
